@@ -1,18 +1,16 @@
-class QuestionGenerator {
+class MathUtility{
 
-  constructor() {
-    this.firstNumber = null;
-    this.secondNumber = null;
-    this.answer = null;
-    this.operator = null;
+  constructor(minimumNumber, maximumNumber){
+    this.maximumNumber = maximumNumber;
+    this.minimumNumber = minimumNumber;
   }
 
   generateRandomNumber() {
-    return Math.floor(Math.random() * 20);
+    return Math.floor((Math.random() * this.maximumNumber) + this.minimumNumber);
   }
 
-  generateRandomOperator() {
-    let operators = [{
+  getOperators(){
+    return [{
         sign: "+",
         method: function(a,b){ return a + b; }
     }, {
@@ -23,32 +21,49 @@ class QuestionGenerator {
       method: function(a,b){ return a * b; }
     }, {
       sign: "/",
-      method: function(a,b){ return a / b; }
+      method: function(a,b){ return parseInt(a / b); }
     }];
+  }
+}
 
-    let selectedOperator = Math.floor(Math.random() * operators.length);
-    return operators[selectedOperator];
+class Question {
+
+  constructor() {
+    this.firstNumber = null;
+    this.secondNumber = null;
+    this.answer = null;
+    this.operator = null;
+    this.question = null;
   }
 
-  generateQuestion() {
-    this.firstNumber = this.generateRandomNumber();
-    this.secondNumber = this.generateRandomNumber();
-    let operator = this.generateRandomOperator();
+  init(minimumNumber, maximumNumber){
+    let mathUtility = new MathUtility(minimumNumber, maximumNumber);
+    this.firstNumber = mathUtility.generateRandomNumber();
+    this.secondNumber = mathUtility.generateRandomNumber();
+    let operator = this.selectRandomOperator(mathUtility.getOperators());
     this.operator = operator.sign;
     this.answer = operator.method(this.firstNumber, this.secondNumber);
-    let question = `${this.firstNumber} ${this.operator} ${this.secondNumber}`
-    return {
-      question : question,
-      answer : parseInt(this.answer),
+    while(this.answer === NaN){
+      this.secondNumber = mathUtility.generateRandomNumber();      
+      this.answer = operator.method(this.firstNumber, this.secondNumber);
     }
+    this.question = this.createQuestion();
+  }
+
+  selectRandomOperator(operators) {
+    return operators[Math.floor(Math.random() * operators.length)];
+  }
+
+  createQuestion(){
+    return `${this.firstNumber} ${this.operator} ${this.secondNumber}`
   }
 }
 
 class Timer {
 
-  constructor(time) {
+  constructor(time, timerElement) {
     this.time = time;
-    this.$timer = $('#timeremain');
+    this.$timer = timerElement;
   }
 
   startTime(nextButton){
@@ -71,15 +86,19 @@ const typeOfAnswers = {
 
 class Quiz {
 
-  constructor(numberOfQuestions) {
+  constructor(data) {
     this.score = 0;
     this.questionAnswers = []
-    this.$questionElement = $('#qtn');
-    this.$userAnswerElement = $('#answerdiv');
-    this.$scoreElement = $('#scoreValue');
+    this.$questionElement = data.$questionElement;
+    this.$userAnswerElement = data.$userAnswerElement;
+    this.$scoreElement = data.$scoreElement;
     this.timer = null;
-    this.$nextButton = $('#start');
-    this.numberOfQuestions = numberOfQuestions;
+    this.$nextButton = data.$nextButton;
+    this.numberOfQuestions = data.numberOfQuestions;
+    this.minimumNumber = data.minimumNumber;
+    this.maximumNumber = data.maximumNumber;
+    this.$timerElement = data.$timerTarget;
+    this.timerLimit = data.timerLimit;
   }
 
   startQuiz(){
@@ -95,7 +114,7 @@ class Quiz {
         this.$userAnswerElement.val('');
         questionNumber++;
         this.displayQuestion();
-        this.timer = this.generateTime();
+        this.timer = this.resetTime();
       } else if(questionNumber === this.numberOfQuestions) {
         this.quizComplete();
         questionNumber++;
@@ -122,7 +141,9 @@ class Quiz {
   }
 
   questionAnswerGenerator(){
-    return new QuestionGenerator().generateQuestion();
+    let question = new Question();
+    question.init(this.minimumNumber, this.maximumNumber);
+    return question;
   }
 
   calculateScore(questionNumber){
@@ -152,22 +173,37 @@ class Quiz {
     this.$scoreElement.text(this.score);
   }
 
-  generateTime(){
-    return new Timer(10).startTime(this.$nextButton);
+  resetTime(){
+    return new Timer(this.timerLimit, this.$timerElement).startTime(this.$nextButton);
   }
 
   displayAnswers(){
-    let unanswerWrong = this.questionAnswers.filter(obj => {
-      return obj.userAnswer === typeOfAnswers.unanswered || obj.userAnswer === typeOfAnswers.wrong
-    });
+    let unanswerWrong = this.filterAnswers();
     let answersOfWrong = unanswerWrong.map((entity) => {return `${entity.question} --> ${entity.answer}`}).join('<br>');
     this.$questionElement.html(answersOfWrong);
     this.$userAnswerElement.remove();
     this.$questionElement.height('260px')
   }
+
+  filterAnswers(){
+    return this.questionAnswers.filter(obj => {
+      return obj.userAnswer === typeOfAnswers.unanswered || obj.userAnswer === typeOfAnswers.wrong
+    });
+  }
 }
 
 $(() => {
-  let numberOfQuestions = 20;
-  new Quiz(numberOfQuestions).startQuiz();
+  let data = {
+    numberOfQuestions : 20,
+    minimumNumber : 0,
+    maximumNumber : 20,
+    $questionElement: $('#qtn'),
+    $userAnswerElement : $('#answerdiv'),
+    $scoreElement : $('#scoreValue'),
+    $nextButton : $('#start'),
+    $timerTarget : $('#timeremain'),
+    timerLimit : 10,
+  }
+
+  new Quiz(data).startQuiz();
 });
