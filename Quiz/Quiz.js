@@ -43,8 +43,8 @@ class Question {
     let operator = this.selectRandomOperator(mathUtility.getOperators());
     this.operator = operator.sign;
     this.answer = operator.method(this.firstNumber, this.secondNumber);
-    while(this.answer === NaN){
-      this.secondNumber = mathUtility.generateRandomNumber();      
+    while(isNaN(this.answer)){
+      this.secondNumber = mathUtility.generateRandomNumber();
       this.answer = operator.method(this.firstNumber, this.secondNumber);
     }
     this.question = this.createQuestion();
@@ -193,7 +193,7 @@ class Quiz {
 }
 
 $(() => {
-  let data = {
+  let data1 = {
     numberOfQuestions : 20,
     minimumNumber : 0,
     maximumNumber : 20,
@@ -204,6 +204,18 @@ $(() => {
     $timerTarget : $('#timeremain'),
     timerLimit : 10,
   }
+  let data2 = {
+    numberOfQuestions : 20,
+    minimumNumber : 0,
+    maximumNumber : 20,
+    $questionElement: $('#qtn2'),
+    $userAnswerElement : $('#answerdiv2'),
+    $scoreElement : $('#scoreValue2'),
+    $nextButton : $('#start2'),
+    $timerTarget : $('#timeremain2'),
+    timerLimit : 10,
+  }
 
-  new Quiz(data).startQuiz();
+  new Quiz(data1).startQuiz();
+  new Quiz(data2).startQuiz();
 });

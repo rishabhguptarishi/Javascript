@@ -15,8 +15,9 @@ body,html
     padding: 15px;
     box-shadow: -4px 4px 14px;
     position: relative;
+
 }
-#score
+#score, #score2
 {
 
     border: 1px solid #3affa3;
@@ -29,37 +30,8 @@ body,html
     padding: 3px;
     border-radius: 8px;
 }
-#try
-{
-    border: 1px solid #f22929;
-    background-color: #f22929;
-    position: absolute;
-    left: 260px;
-    padding: 3px;
-    font-size: 15px;
-    font-family: sans-serif;
-    font-weight: bold;
-    box-shadow: 0px 1px 5px;
-    color: aliceblue;
-    display: none;
 
-}
-#correct
-{
-    display: none;
-    border: 1px solid #f22929;
-    background-color: #43f128;
-    position: absolute;
-    left: 250px;
-    padding: 3px;
-    font-size: 15px;
-    font-family: sans-serif;
-    font-weight: bold;
-    box-shadow: 0px 1px 5px;
-    color: aliceblue;
-
-}
-#qtn
+#qtn, #qtn2
 {
   overflow: auto;
      width: 450px;
@@ -78,7 +50,7 @@ body,html
 
 }
 
-#answerdiv
+#answerdiv, #answerdiv2
 {
      width: 450px;
     height: 10%;
@@ -96,75 +68,7 @@ body,html
 
 }
 
-.option
-{
-    position: relative;
-    margin-left: 90px ;
-    position: relative;
-    transition:  all 0.12s;
-}
-
-#option1
-{
-    width: 100px;
-    height: 60px;
-    border: 1px solid white;
-    position: absolute;
-    background-color: #ffffff;
-    text-align: center;
-    font-size: 25px;
-    padding-top: 40px;
-    box-shadow: 0px 5px 5px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-#option2
-{
-    width: 100px;
-    height: 60px;
-    border: 1px solid white;
-    position: absolute;
-    left: 110px;
-    background-color: #ffffff;
-    text-align: center;
-    font-size: 25px;
-    padding-top: 40px;
-    box-shadow: 0px 5px 5px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-#option3
-{
-    width: 100px;
-    height: 60px;
-    border: 1px solid white;
-    position: absolute;
-    left: 220px;
-    background-color: #ffffff;
-    text-align: center;
-    font-size: 25px;
-    padding-top: 40px;
-    box-shadow: 0px 5px 5px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-#option4
-{
-    width: 100px;
-    height: 60px;
-    border: 1px solid white;
-    position: absolute;
-    left: 330px;
-    background-color: #ffffff;
-    text-align: center;
-    font-size: 25px;
-    padding-top: 40px;
-    box-shadow: 0px 5px 5px;
-    border-radius: 5px;
-    cursor: pointer;
-
-}
-#start
+#start, #start2
 {
 
 
@@ -182,66 +86,21 @@ body,html
     font-family: sans-serif;
     background-color: #ffffff;
 }
-#option1:hover
-{
-   background-color: #9DD2EA;
-    box-shadow: 0px 5px 5px purple;
-}
-#option2:hover
-{
-   background-color: #9DD2EA;
-    box-shadow: 0px 5px 5px purple;
-}
-#option3:hover
-{
-   background-color: #9DD2EA;
-    box-shadow: 0px 5px 5px purple;
-}
-#option4:hover
-{
-   background-color: #9DD2EA;
-    box-shadow: 0px 5px 5px purple;
-}
-#option1:active
-{
-   background-color: #9DD2EA;
-    box-shadow: 0px 0px 0px purple;
-    top: 5px;
-}
-#option2:active
-{
-   background-color: #9DD2EA;
-    box-shadow: 0px 0px 0px purple;
-    top: 5px;
-}
-#option3:active
-{
-   background-color: #9DD2EA;
-    box-shadow: 0px 0px 0px purple;
-    top: 5px;
-}
-#option4:active
-{
-   background-color: #9DD2EA;
-    top: 5px;
-    box-shadow: 0px 0px 0px purple;
-}
 
-
-#start:hover
+#start:hover, #start2:hover
 {
  cursor: pointer;
     background-color: #9DD2EA;
     box-shadow: 0px 5px 5px purple;
 }
-#start:active
+#start:active, #start2:active
 {
    background-color: #9DD2EA;
     top: 445px;
     box-shadow: 0px 0px 0px ;
 }
 
-#time
+#time, #time2
 {
     width: 150px;
     height: 25px;
@@ -253,19 +112,5 @@ body,html
     border-radius: 5px;
     box-shadow: 0px 5px 5px ;
     font-weight: bold;
-
-}
-#gameover
-{
-    width: 400px;
-    height: 100px;
- background-color: coral;
-    position: absolute;
-    top: 120px;
-    text-align: center;
-    padding: 100px;
-    font-size: 40px;
-    color: white;
-    display: none;
 
 }
