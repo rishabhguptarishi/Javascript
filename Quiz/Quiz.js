@@ -1,15 +1,10 @@
-class MathUtility{
+var MathUtility = {
 
-  constructor(minimumNumber, maximumNumber){
-    this.maximumNumber = maximumNumber;
-    this.minimumNumber = minimumNumber;
-  }
+  generateRandomNumber : function(minimumNumber, maximumNumber) {
+    return Math.floor((Math.random() * maximumNumber) + minimumNumber);
+  },
 
-  generateRandomNumber() {
-    return Math.floor((Math.random() * this.maximumNumber) + this.minimumNumber);
-  }
-
-  getOperators(){
+  getOperators :function(){
     return [{
         sign: "+",
         method: function(a,b){ return a + b; }
@@ -37,14 +32,13 @@ class Question {
   }
 
   init(minimumNumber, maximumNumber){
-    let mathUtility = new MathUtility(minimumNumber, maximumNumber);
-    this.firstNumber = mathUtility.generateRandomNumber();
-    this.secondNumber = mathUtility.generateRandomNumber();
-    let operator = this.selectRandomOperator(mathUtility.getOperators());
+    this.firstNumber = MathUtility.generateRandomNumber(minimumNumber, maximumNumber);
+    this.secondNumber = MathUtility.generateRandomNumber(minimumNumber, maximumNumber);
+    let operator = this.selectRandomOperator(MathUtility.getOperators());
     this.operator = operator.sign;
     this.answer = operator.method(this.firstNumber, this.secondNumber);
     while(isNaN(this.answer)){
-      this.secondNumber = mathUtility.generateRandomNumber();
+      this.secondNumber = MathUtility.generateRandomNumber();
       this.answer = operator.method(this.firstNumber, this.secondNumber);
     }
     this.question = this.createQuestion();
@@ -116,17 +110,9 @@ class Quiz {
         this.displayQuestion();
         this.timer = this.resetTime();
       } else if(questionNumber === this.numberOfQuestions) {
-        this.quizComplete();
-        questionNumber++;
-      } else {
-        location.reload();
+        this.displayAnswers();
       }
     });
-  }
-
-  quizComplete(){
-    this.displayAnswers();
-    this.$nextButton.html('Finish');
   }
 
   firstQuestion(){
@@ -181,8 +167,8 @@ class Quiz {
     let unanswerWrong = this.filterAnswers();
     let answersOfWrong = unanswerWrong.map((entity) => {return `${entity.question} --> ${entity.answer}`}).join('<br>');
     this.$questionElement.html(answersOfWrong);
-    this.$userAnswerElement.remove();
-    this.$questionElement.height('260px')
+    this.$questionElement.nextAll().remove();
+    this.$questionElement.height('75%')
   }
 
   filterAnswers(){
