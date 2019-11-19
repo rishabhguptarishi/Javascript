@@ -4,7 +4,7 @@ var MathUtility = {
     return Math.floor((Math.random() * maximumNumber) + minimumNumber);
   },
 
-  getOperators :function(){
+  getOperators :function(integerType){
     return [{
         sign: "+",
         method: function(a,b){ return a + b; }
@@ -16,39 +16,40 @@ var MathUtility = {
       method: function(a,b){ return a * b; }
     }, {
       sign: "/",
-      method: function(a,b){ return parseInt(a / b); }
+      method: function(a,b){ return parseInt(a / b, integerType); }
     }];
   }
 }
 
 class Question {
 
-  constructor() {
+  constructor(integerType) {
     this.firstNumber = null;
     this.secondNumber = null;
     this.answer = null;
     this.operator = null;
     this.question = null;
+    this.integerType = integerType;
   }
 
   init(minimumNumber, maximumNumber){
     this.firstNumber = MathUtility.generateRandomNumber(minimumNumber, maximumNumber);
     this.secondNumber = MathUtility.generateRandomNumber(minimumNumber, maximumNumber);
-    let operator = this.selectRandomOperator(MathUtility.getOperators());
+    let operator = this.selectRandomOperator(MathUtility.getOperators(this.integerType));
     this.operator = operator.sign;
     this.answer = operator.method(this.firstNumber, this.secondNumber);
     while(isNaN(this.answer)){
       this.secondNumber = MathUtility.generateRandomNumber();
       this.answer = operator.method(this.firstNumber, this.secondNumber);
     }
-    this.question = this.createQuestion();
+    this.question = this.questionStatement();
   }
 
   selectRandomOperator(operators) {
     return operators[Math.floor(Math.random() * operators.length)];
   }
 
-  createQuestion(){
+  questionStatement(){
     return `${this.firstNumber} ${this.operator} ${this.secondNumber}`
   }
 }
@@ -72,12 +73,6 @@ class Timer {
   }
 }
 
-const typeOfAnswers = {
-  unanswered : 0,
-  wrong : 0,
-  correct : 1,
-};
-
 class Quiz {
 
   constructor(data) {
@@ -93,6 +88,12 @@ class Quiz {
     this.maximumNumber = data.maximumNumber;
     this.$timerElement = data.$timerTarget;
     this.timerLimit = data.timerLimit;
+    this.integerType = data.integerType;
+    this.typeOfAnswers = Object.freeze({
+      unanswered : 0,
+      wrong : 0,
+      correct : 1,
+    });
   }
 
   startQuiz(){
@@ -127,7 +128,7 @@ class Quiz {
   }
 
   questionAnswerGenerator(){
-    let question = new Question();
+    let question = new Question(this.integerType);
     question.init(this.minimumNumber, this.maximumNumber);
     return question;
   }
@@ -138,19 +139,19 @@ class Quiz {
   }
 
   evaluateQuestion(questionNumber){
-    let userAnswer = parseInt(this.$userAnswerElement.val());
+    let userAnswer = parseInt(this.$userAnswerElement.val(), this.integerType);
     let questionAnswer = this.questionAnswers[questionNumber];
     if(userAnswer === ''){
-      questionAnswer.userAnswer = typeOfAnswers.unanswered;
-      return typeOfAnswers.unanswered;
+      questionAnswer.userAnswer = this.typeOfAnswers.unanswered;
+      return this.typeOfAnswers.unanswered;
     } else {
       if(userAnswer === questionAnswer.answer){
-        questionAnswer.userAnswer = typeOfAnswers.correct;
-        return typeOfAnswers.correct;
+        questionAnswer.userAnswer = this.typeOfAnswers.correct;
+        return this.typeOfAnswers.correct;
       }
       else {
-        questionAnswer.userAnswer = typeOfAnswers.wrong;
-        return typeOfAnswers.wrong;
+        questionAnswer.userAnswer = this.typeOfAnswers.wrong;
+        return this.typeOfAnswers.wrong;
       }
     }
   }
@@ -173,7 +174,7 @@ class Quiz {
 
   filterAnswers(){
     return this.questionAnswers.filter(obj => {
-      return obj.userAnswer === typeOfAnswers.unanswered || obj.userAnswer === typeOfAnswers.wrong
+      return obj.userAnswer === this.typeOfAnswers.unanswered || obj.userAnswer === this.typeOfAnswers.wrong
     });
   }
 }
@@ -189,6 +190,7 @@ $(() => {
     $nextButton : $('#start'),
     $timerTarget : $('#timeremain'),
     timerLimit : 10,
+    integerType : 10,
   }
   let data2 = {
     numberOfQuestions : 20,
@@ -200,6 +202,7 @@ $(() => {
     $nextButton : $('#start2'),
     $timerTarget : $('#timeremain2'),
     timerLimit : 10,
+    integerType : 10,
   }
 
   new Quiz(data1).startQuiz();
